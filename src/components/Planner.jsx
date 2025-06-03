@@ -9,12 +9,32 @@ import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 import Header from './Header';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import ClearAllIcon from '@mui/icons-material/ClearAll';
 
-function Planner({selectedPlace, formatStartDate, formatEndDate, handleListDays, listDays, numberOfDays,
-                  handleChangeDesc, handleChangeCost, handleAddExpense, 
+
+
+
+function Planner({selectedPlace, formatStartDate, formatEndDate, numberOfDays,
+                  handleChangeDesc, handleChangeCost, handleAddExpense, handleResetInputs,handleResetAll,
                   listItinerary, total, handleChangeDay, handleDelete, handleEditForm, handleUpdateForm,
                   handleSubmitForm, isEditing, setIsEditing, form, day, description, cost
-}) {
+    }) {
+
+      const [openConfirm, setOpenConfirm] = React.useState(false);
+
+      const handleOpenConfirm = () => {
+          setOpenConfirm(true);
+     };
+
+  const handleCloseConfirm = () => {
+    setOpenConfirm(false);
+     };
+
 
   
   return (
@@ -29,7 +49,7 @@ function Planner({selectedPlace, formatStartDate, formatEndDate, handleListDays,
       <br /> */}
       {/* {listDays.map((item, id) =>  */}
         {/* ( */}
-          <>
+          
           {/* <p key={id}>Itinerary Day {item.number}</p>  */}
           <p>Itinerary for {numberOfDays} day(s)</p> 
           <label>
@@ -44,8 +64,33 @@ function Planner({selectedPlace, formatStartDate, formatEndDate, handleListDays,
           </label>
           <br />
           <Button style={{margin: "20px"}}variant="contained" onClick={handleAddExpense}>Add Expense</Button>
-          </>
-           {/* ))} */}
+          <Button 
+            variant="contained"
+            color="warning"
+            onClick={handleResetInputs}
+            startIcon={<RefreshIcon />}
+            sx={{
+              backgroundColor: '#ff9800',
+              '&:hover': { backgroundColor: '#e65100' }
+            }}
+          >
+           Reset Inputs
+          </Button>
+
+         <p></p>          
+          <Button 
+            variant="contained"
+            color="error"
+            onClick={handleOpenConfirm}
+            disabled={listItinerary.length === 0}
+            startIcon={<ClearAllIcon />}
+            sx={{
+              '&.Mui-disabled': { backgroundColor: 'grey.400' }
+            }}
+          >
+           Clear All
+          </Button>
+           
           <br/>
         
         <TableContainer component={Paper}>
@@ -55,6 +100,7 @@ function Planner({selectedPlace, formatStartDate, formatEndDate, handleListDays,
                     <TableCell>Day</TableCell>
                     <TableCell>Description</TableCell>
                     <TableCell>Cost$</TableCell>
+                    <TableCell>Actions</TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
@@ -64,9 +110,19 @@ function Planner({selectedPlace, formatStartDate, formatEndDate, handleListDays,
                         <TableCell component="th" scope="row">{item.day}</TableCell>
                         <TableCell>{item.description}</TableCell>
                         <TableCell>{item.cost}</TableCell>
-                        <TableCell onClick={()=>handleEditForm(item.id)}>✏️</TableCell>
+                        <TableCell>
+                          <Button size="small" onClick={()=>handleEditForm(item.id)}
+                           startIcon={<span>✏️</span>}
+                          >
+                          Edit
+                          </Button>
                         
-                        <TableCell onClick={()=>handleDelete(item.id)}>❌</TableCell>
+                          <Button size="small" color="error" onClick={()=>handleDelete(item.id)}
+                           startIcon={<span>❌</span>}
+                          >
+                           Delete
+                          </Button>
+                        </TableCell>
                         
                     </TableRow>
                 ))}
@@ -79,7 +135,7 @@ function Planner({selectedPlace, formatStartDate, formatEndDate, handleListDays,
         <div>
         <Link to='/'><Button variant="contained">Back</Button></Link>
         </div>
-        {isEditing && 
+        {isEditing && (
           <form onSubmit={handleSubmitForm}>
             <table>
               <thead>
@@ -106,9 +162,31 @@ function Planner({selectedPlace, formatStartDate, formatEndDate, handleListDays,
             <input type="submit" />
             <button onClick={() => setIsEditing(false)}>Cancel</button>
           </form>
-        }
+         )}
+
+         {/* Clear All Confirmation Dialog */}
+         <Dialog open={openConfirm} onClose={handleCloseConfirm}>
+           <DialogTitle>Confirm Clear All</DialogTitle>
+           <DialogContent>
+             Are you sure you want to clear all itinerary items? This cannot be undone.
+           </DialogContent>
+           <DialogActions>
+             <Button onClick={handleCloseConfirm}>Cancel</Button>
+             <Button 
+               onClick={() => {
+               handleResetAll();
+               handleCloseConfirm();
+             }} 
+             color="error"
+             variant="contained"
+             >
+               Clear All
+             </Button>
+            </DialogActions>
+      
+          </Dialog>  
     </>
-  );
-}
+    );
+   }
 
 export default Planner;
