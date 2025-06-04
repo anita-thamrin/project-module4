@@ -33,6 +33,21 @@ function App() {
   const [form, setForm] = useState(blankForm);
   const [countries, setCountries] = useState();
 
+   // Reset just the input fields
+  const handleResetInputs = () => {
+    setDay(1);
+    setDescription('');
+    setCost(0);
+  };
+
+  // Reset the entire itinerary
+  const handleResetAll = () => {
+    setListItinerary([]);
+    setTotal(0);
+    handleResetInputs(); // Also reset the inputs
+    setIsEditing(false);
+  };
+
   async function apiGet() {
     try {
       const response = await countriesAPI.get();
@@ -139,6 +154,8 @@ function App() {
   const handleSubmitForm = (event) => {
     event.preventDefault();
 
+  
+
     // Create new item and copy values from form
     const newItem = {...listItinerary[form.index]};
     newItem.day = form.day;
@@ -194,6 +211,8 @@ function App() {
                                               setIsEditing={setIsEditing}
                                               form={form}
                                               day={day}
+                                              handleResetInputs={handleResetInputs}  
+                                              handleResetAll={handleResetAll}       
                                               
       />} />
     </Routes>
