@@ -15,6 +15,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 
 
@@ -34,6 +36,23 @@ function Planner({selectedPlace, formatStartDate, formatEndDate, numberOfDays,
   const handleCloseConfirm = () => {
     setOpenConfirm(false);
      };
+
+  const handleExportPDF = () => {
+  const doc = new jsPDF();
+  doc.setFontSize(18);
+  doc.text(`Itinerary for ${selectedPlace}`, 14, 22);
+
+   autoTable(doc, {
+    startY: 30,
+    head: [['Day', 'Description', 'Cost ($)']],
+    body: listItinerary.map(item => [item.day, item.description, item.cost]),
+  });
+
+  doc.text(`Total Expenses: $${total.toFixed(2)}`, 14, doc.lastAutoTable.finalY + 10);
+
+  // Show in browser
+  window.open(doc.output('bloburl'), '_blank');
+};
 
 
   
@@ -184,8 +203,16 @@ function Planner({selectedPlace, formatStartDate, formatEndDate, numberOfDays,
              </Button>
             </DialogActions>
       
-          </Dialog>  
-    </>
+          </Dialog> 
+           <Button
+             variant="contained"
+             color="success"
+             onClick={handleExportPDF}
+             style={{ margin: '20px' }}
+           >
+             Export to PDF
+          </Button>
+      </>
     );
    }
 
