@@ -1,13 +1,12 @@
 import travellerapp from '../assets/travellerapp.png';
+import './Responsive.css';
 
 function Header () {
 
     return (
-        <>
         <nav>
-            <img style={{marginTop:"10px"}} src={travellerapp} width="1000px" height="400px" alt="" />
+            <img className="header-image" src={travellerapp} alt="Travel App Header" />
         </nav>
-        </>
     );
 }
 

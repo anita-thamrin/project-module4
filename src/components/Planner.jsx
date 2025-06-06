@@ -7,8 +7,9 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Header from './Header';
+import Footer from './Footer';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -17,6 +18,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import CurrencyDisplay from './CurrencyDisplay';
 
 
 
@@ -24,9 +26,10 @@ import autoTable from 'jspdf-autotable';
 function Planner({selectedPlace, formatStartDate, formatEndDate, numberOfDays,
                   handleChangeDesc, handleChangeCost, handleAddExpense, handleResetInputs,handleResetAll,
                   listItinerary, total, handleChangeDay, handleDelete, handleEditForm, handleUpdateForm,
-                  handleSubmitForm, isEditing, setIsEditing, form, day, description, cost
+                  handleSubmitForm, isEditing, setIsEditing, form, day, description, cost, handleCompleteReset
     }) {
 
+      const disableAddExpense = !description || cost === '' || isNaN(cost);
       const [openConfirm, setOpenConfirm] = React.useState(false);
 
       const handleOpenConfirm = () => {
@@ -54,6 +57,13 @@ function Planner({selectedPlace, formatStartDate, formatEndDate, numberOfDays,
   window.open(doc.output('bloburl'), '_blank');
 };
 
+  const navigate = useNavigate();
+
+  const handleBackClick = () => {
+    handleCompleteReset();
+    navigate('/');
+  };
+
 
   
   return (
@@ -64,6 +74,7 @@ function Planner({selectedPlace, formatStartDate, formatEndDate, numberOfDays,
       <span style={{padding:"20px"}}>Start Date: {formatStartDate}</span>
       <span>End Date: {formatEndDate}</span>
       </div>
+      <CurrencyDisplay selectedPlace={selectedPlace} />
       {/* <Button variant="contained" style={{margin: "20px"}} onClick={handleListDays}>Add Itinerary</Button>
       <br /> */}
       {/* {listDays.map((item, id) =>  */}
@@ -82,7 +93,7 @@ function Planner({selectedPlace, formatStartDate, formatEndDate, numberOfDays,
             Cost $: <input type="number" name="cost" value={cost} onChange={handleChangeCost}/>
           </label>
           <br />
-          <Button style={{margin: "20px"}}variant="contained" onClick={handleAddExpense}>Add Expense</Button>
+          <Button style={{margin: "20px"}}variant="contained" onClick={handleAddExpense} disabled={disableAddExpense}>Add Expense</Button>
           <Button 
             variant="contained"
             color="warning"
@@ -152,7 +163,7 @@ function Planner({selectedPlace, formatStartDate, formatEndDate, numberOfDays,
             Total Expenses $: {total.toFixed(2)}
         </div>
         <div>
-        <Link to='/'><Button variant="contained">Back</Button></Link>
+        <Button variant="contained" onClick={handleBackClick}>Start Over</Button>
         </div>
         {isEditing && (
           <form onSubmit={handleSubmitForm}>
@@ -212,6 +223,7 @@ function Planner({selectedPlace, formatStartDate, formatEndDate, numberOfDays,
            >
              Export to PDF
           </Button>
+        <Footer />
       </>
     );
    }

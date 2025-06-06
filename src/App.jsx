@@ -1,19 +1,23 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { v4 as uuid } from 'uuid';
 import './App.css';
 import Places from "./components/Places";
 import Planner from './components/Planner';
 import dayjs from 'dayjs';
-import countriesAPI from './api/countriesapi';
+import AboutUs from './components/About';
+import ContactUs from './components/Contact';
+import FrequentlyAsked from './components/Questions';
+import TermsConditions from './components/Terms';
+import Footer from './components/Footer';
+import currencyAPI from './api/currency';
+
 
 function App() {
-  // const data = ["Kuala Lumpur, Malaysia", "Tokyo, Japan", "Osaka, Japan", "Penang, Malaysia", 
-  //   "Hong Kong, Hong Kong"];
 
   const [selectedPlace, setSelectedPlace] = useState('');
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [formatStartDate, setFormatStartDate] = useState('');
   const [formatEndDate, setFormatEndDate] = useState('');
   const [listDays, setListDays] = useState();
@@ -31,7 +35,8 @@ function App() {
     cost: 0,
   }
   const [form, setForm] = useState(blankForm);
-  const [countries, setCountries] = useState();
+  const [exchangeRates, setExchangeRates] = useState(null);
+
 
    // Reset just the input fields
   const handleResetInputs = () => {
@@ -48,24 +53,42 @@ function App() {
     setIsEditing(false);
   };
 
-  async function apiGet() {
+  // Complete reset function
+  const handleCompleteReset = useCallback(() => {
+    setSelectedPlace('');
+    setStartDate(null);
+    setEndDate(null);
+    setFormatStartDate('');
+    setFormatEndDate('');
+    setListDays(null);
+
+    // Resets Planner.jsx data
+    setListItinerary([]);
+    setTotal(0);
+    setDay(1);
+    setDescription('');
+    setCost(0);
+    setIsEditing(false);
+    setForm(blankForm);
+    setExchangeRates(null);
+  }, []);
+
+  async function apiGetCurrencyRates() {
     try {
-      const response = await countriesAPI.get();
-      console.log("GET status:", response.status);
-      console.log("GET data:", response.data); 
-      setCountries(response.data); 
-    } catch(error) {
-      console.log(error.message);
+      const rates = await currencyAPI.getLatestRates('USD', 'EUR,GBP,SGD');
+      setExchangeRates(rates);
+    } catch (error) {
+      console.log("Error fetching currency rates:", error.message);
     }
   }
 
   useEffect(() => {
-    apiGet();
+    apiGetCurrencyRates();
   }, []);
 
   
   const handleChangePlace = (event, value) => {
-    setSelectedPlace(value.name);
+    setSelectedPlace(value ? value.country_name : '');
   };
 
   const handleStartDate = (date) => {
@@ -113,6 +136,9 @@ function App() {
   }
 
   const handleAddExpense = () => {
+    if (Number(cost) < 0) {
+      alert('Cost cannot be negative');
+    }
         const newExpense = {
             id: uuid(),
             day: day,
@@ -125,6 +151,7 @@ function App() {
         const sum = total + Number(newExpense.cost);
         setTotal(sum);
   }
+
 
   const handleDelete = (id) => {
         const newList = listItinerary.filter((item) =>item.id !== id);
@@ -184,7 +211,7 @@ function App() {
                                             handleStartDate={handleStartDate}
                                             endDate={endDate}
                                             handleEndDate={handleEndDate}
-                                            data={countries}
+                                            exchangeRates={exchangeRates}
                                             
       />} />
       <Route path='planner' element={<Planner selectedPlace={selectedPlace}
@@ -212,9 +239,15 @@ function App() {
                                               form={form}
                                               day={day}
                                               handleResetInputs={handleResetInputs}  
-                                              handleResetAll={handleResetAll}       
+                                              handleResetAll={handleResetAll}
+                                              handleCompleteReset={handleCompleteReset} 
+                                              exchangeRates={exchangeRates}     
                                               
       />} />
+        <Route path='/about' element={<AboutUs />} />
+        <Route path='/questions' element={<FrequentlyAsked />} />
+        <Route path='/contact' element={<ContactUs />} />
+        <Route path='/terms' element={<TermsConditions />} />
     </Routes>
     </BrowserRouter>
   )
