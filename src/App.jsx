@@ -37,6 +37,10 @@ function App() {
   const [form, setForm] = useState(blankForm);
   const [exchangeRates, setExchangeRates] = useState(null);
 
+  const numberOfDays = (startDate && endDate) ?
+  Math.max(0, Math.floor((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 3600 * 24)) + 1)
+  : 0;
+
 
    // Reset just the input fields
   const handleResetInputs = () => {
@@ -103,10 +107,10 @@ function App() {
     setFormatEndDate(formattedEndDate);
   }
 
-  const date1 = new Date(startDate);
-  const date2 = new Date(endDate);
-  const timeDiff = Math.abs(date2.getTime() - date1.getTime());
-  const numberOfDays = Math.floor(timeDiff / (1000 * 3600 * 24)) + 1;
+  //const date1 = new Date(startDate);
+  //const date2 = new Date(endDate);
+  //const timeDiff = Math.abs(date2.getTime() - date1.getTime());
+  //const numberOfDays = Math.floor(timeDiff / (1000 * 3600 * 24)) + 1;
   
   // const handleListDays = (numberOfDays) => {
   //   let dict = [];
@@ -136,21 +140,32 @@ function App() {
   }
 
   const handleAddExpense = () => {
-    if (Number(cost) < 0) {
+    const parsedCost = Number(cost);
+    const parsedDay = Number(day);
+
+    if (parsedCost < 0) {
       alert('Cost cannot be negative');
+      return;
     }
+
+    if (parsedDay < 1 || parsedDay > numberOfDays || isNaN(parsedDay)) {
+      alert(`Day must be a number between 1 and ${numberOfDays}.`);
+      return;
+    }
+
         const newExpense = {
             id: uuid(),
-            day: day,
+            day: parsedDay,
             description: description,
-            cost: cost,
+            cost: parsedCost,
         }
         const newList = [...listItinerary, newExpense];
         setListItinerary(newList);
         
-        const sum = total + Number(newExpense.cost);
+        const sum = total + parsedExpense.cost;
         setTotal(sum);
-  }
+        handleResetInputs();
+  };
 
 
   const handleDelete = (id) => {
@@ -174,6 +189,17 @@ function App() {
 
   const handleUpdateForm = (e, key) => {
     const value = e.target.value;
+    if (key === 'day') {
+      const parsedValue = Number(value);
+      if (isNaN(parsedValue) || parsedValue < 1 || parsedValue > numberOfDays) {
+        console.warn('Date is out of range.')
+      }
+    } else if (key === 'cost') {
+  const parsedValue = Number(value);
+    if (isNaN(parsedValue) || parsedValue < 0)  {
+      console.ware('Negative or invalid Cost')
+    }
+    }
     const updatedForm = {...form, [key]: value};
     setForm(updatedForm);
   }
@@ -181,13 +207,30 @@ function App() {
   const handleSubmitForm = (event) => {
     event.preventDefault();
 
-  
+    const parsedDay = Number(form.day);
+    const parsefCost = Number(form.cost);
 
+    if (isNaN(parsedDay) || parsedDay < 1 || parsedDay > numberOfDays) {
+      alert(`Updated day must be a number between 1 and ${numberOfDays}.`);
+      return;
+    }
+
+    if (isNaN(parsefCost) || parsefCost < 0) {
+      AlternateEmail('Updated Cost cannot be negative or invalid.');
+      return;
+    }
+
+    if (!form.description.trim()) {
+      alert('Description cannot be empty.');
+      return;
+    }
+
+  
     // Create new item and copy values from form
     const newItem = {...listItinerary[form.index]};
-    newItem.day = form.day;
+    newItem.day = parsedDay;
     newItem.description = form.description;
-    newItem.cost = form.cost;
+    newItem.cost = parsedCost;
 
     // Copy current list and replace edited item
     const newList = [...listItinerary];
@@ -195,10 +238,11 @@ function App() {
     setListItinerary(newList);
 
     // Remove the total sum and replace with the new total
-    const newSum = total - Number(listItinerary[form.index].cost) + Number(newItem.cost);
+    const oldCost = Number(listItinerary[form.index]. cost);
+    const newSum = total - oldCost + newItem.cost;
     setTotal(newSum);
     setIsEditing(false);
-
+    setForm(blankForm);
   }
 
   return (
@@ -220,7 +264,7 @@ function App() {
                                               formatStartDate={formatStartDate}
                                               formatEndDate={formatEndDate}
                                               // handleListDays={handleListDays}
-                                              listDays={listDays}
+                                              // listDays={listDays}
                                               numberOfDays={numberOfDays}
                                               description={description}
                                               cost={cost}
