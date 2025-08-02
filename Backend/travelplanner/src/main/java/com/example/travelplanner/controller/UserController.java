@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.travelplanner.entity.Itinerary;
 import com.example.travelplanner.entity.User;
 import com.example.travelplanner.service.UserService;
 
@@ -34,15 +35,23 @@ public class UserController {
 
     // Create
     @PostMapping
-    public ResponseEntity<User> createUser (@Valid @RequestBody User user) {
+    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
         logger.info("🟢 Creating user");
         User newUser = userService.createUser(user);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
+    // NESTED ROUTE - add itinerary to user
+    @PostMapping("/{id}/itineraries")
+    public ResponseEntity<Itinerary> addItineraryToUser(@PathVariable Long id,
+            @Valid @RequestBody Itinerary itinerary) {
+        Itinerary newItinerary = userService.addItineraryToUser(id, itinerary);
+        return new ResponseEntity<>(newItinerary, HttpStatus.CREATED);
+    }
+
     // Read all
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers (@RequestParam(required = false) String firstName) {
+    public ResponseEntity<List<User>> getAllUsers(@RequestParam(required = false) String firstName) {
         logger.info("🟢 Getting all users");
 
         if (firstName != null && !firstName.trim().isEmpty()) {
@@ -60,14 +69,14 @@ public class UserController {
 
     // Read one
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser (@PathVariable Long id) {
+    public ResponseEntity<User> getUser(@PathVariable Long id) {
         logger.info("🟢 Getting user with particular id");
         return new ResponseEntity<>(userService.getUser(id), HttpStatus.OK);
     }
 
     // Update
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser (@PathVariable Long id, @RequestBody User user) {
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
         logger.info("🟢 Updating user with particular id");
         User updatedUser = userService.updateUser(id, user);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
@@ -75,9 +84,9 @@ public class UserController {
 
     // Delete
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteUser (@PathVariable Long id) {
+    public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id) {
         logger.info("🟢 Deleting user with particular id");
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    } 
+    }
 }
