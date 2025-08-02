@@ -2,8 +2,11 @@
 package com.example.travelplanner.service;
 
 import com.example.travelplanner.entity.Itinerary;
+import com.example.travelplanner.entity.Trip;
 import com.example.travelplanner.exception.ItineraryNotFoundException;
 import com.example.travelplanner.repository.ItineraryRepository;
+import com.example.travelplanner.repository.TripRepository;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,9 +15,11 @@ import java.util.List;
 public class ItineraryServiceImpl implements ItineraryService {
 
     private final ItineraryRepository repo;
+    private final TripRepository tripRepository;
 
-    public ItineraryServiceImpl(ItineraryRepository repo) {
+    public ItineraryServiceImpl(ItineraryRepository repo, TripRepository tripRepository) {
         this.repo = repo;
+        this.tripRepository = tripRepository;
     }
 
     @Override
@@ -25,6 +30,14 @@ public class ItineraryServiceImpl implements ItineraryService {
     @Override
     public Itinerary getItinerary(Long id) {
         return repo.findById(id).orElseThrow(() -> new ItineraryNotFoundException(id));
+    }
+
+    @Override
+    public Trip addTripToItinerary(Long id, Trip trip) {
+        Itinerary selectedItinerary = repo.findById(id).orElseThrow(() -> new ItineraryNotFoundException(id));
+
+        trip.setItinerary(selectedItinerary);
+        return tripRepository.save(trip);
     }
 
     @Override

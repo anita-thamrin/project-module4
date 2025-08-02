@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -43,6 +44,9 @@ public class Itinerary {
     private User user;
 
     private String notes;
+
+    @OneToMany(mappedBy = "itinerary")
+    private List<Trip> trips;
 
     // Getters and Setters
     public Long getId() {
