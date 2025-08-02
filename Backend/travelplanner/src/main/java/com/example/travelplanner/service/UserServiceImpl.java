@@ -4,17 +4,21 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.travelplanner.entity.Itinerary;
 import com.example.travelplanner.entity.User;
 import com.example.travelplanner.exception.UserNotFoundException;
+import com.example.travelplanner.repository.ItineraryRepository;
 import com.example.travelplanner.repository.UserRepository;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
+    private ItineraryRepository itineraryRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, ItineraryRepository itineraryRepository) {
         this.userRepository = userRepository;
+        this.itineraryRepository = itineraryRepository;
     }
 
     // Create
@@ -26,7 +30,7 @@ public class UserServiceImpl implements UserService {
     // Read one
     @Override
     public User getUser(Long id) {
-        return userRepository.findById(id).orElseThrow(()-> new UserNotFoundException(id));
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 
     // Read all
@@ -39,7 +43,7 @@ public class UserServiceImpl implements UserService {
     // Update
     @Override
     public User updateUser(Long id, User user) {
-        User userToUpdate = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException(id));
+        User userToUpdate = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
 
         userToUpdate.setFirstName(user.getFirstName());
         userToUpdate.setLastName(user.getLastName());
@@ -67,5 +71,14 @@ public class UserServiceImpl implements UserService {
         List<User> foundUsers = userRepository.findByFirstNameIgnoreCase(firstName);
         return foundUsers;
     }
-    
+
+    @Override
+    public Itinerary addItineraryToUser(Long id, Itinerary itinerary) {
+        User selectedUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+
+        itinerary.setUser(selectedUser);
+        return itineraryRepository.save(itinerary);
+
+    }
+
 }
