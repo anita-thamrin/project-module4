@@ -21,5 +21,6 @@ public interface UserService {
     List<User> findByFirstNameIgnoreCase(String firstName);
 
     Itinerary addItineraryToUser(Long id, Itinerary itinerary);
+    List<Itinerary> getUserItineraries(Long id);
 
 }

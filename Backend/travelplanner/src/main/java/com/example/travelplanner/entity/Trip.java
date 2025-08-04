@@ -1,5 +1,7 @@
 package com.example.travelplanner.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -34,4 +36,9 @@ public class Trip {
     @NotNull(message = "Price cannot be null")
     @Min(value = 0, message = "Price must be non-negative")
     private Double price;
+
+    @JsonBackReference
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "itinerary_id", referencedColumnName = "id")
+    private Itinerary itinerary;
 }

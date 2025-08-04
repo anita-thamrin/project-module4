@@ -81,4 +81,11 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public List<Itinerary> getUserItineraries(Long id) {
+        User selectedUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        List<Itinerary> itineraries = selectedUser.getItineraries();
+        return itineraries;
+    }
+
 }
