@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -41,6 +42,9 @@ public class Itinerary {
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+
+    @OneToMany(mappedBy = "itinerary", cascade = CascadeType.ALL)
+    private List<Trip> trips;
 
     private String notes;
 
