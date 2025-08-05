@@ -34,6 +34,18 @@ public class ItineraryServiceImpl implements ItineraryService {
     }
 
     @Override
+    public Itinerary updateItinerary(Long id, Itinerary itinerary) {
+        Itinerary itineraryToUpdate = repo.findById(id)
+                .orElseThrow(() -> new ItineraryNotFoundException(id));
+
+        itineraryToUpdate.setDestination(itinerary.getDestination());
+        itineraryToUpdate.setStartDate(itinerary.getStartDate());
+        itineraryToUpdate.setEndDate(itinerary.getEndDate());
+
+        return repo.save(itineraryToUpdate);
+    }
+
+    @Override
     public List<Itinerary> getAllItineraries() {
         return repo.findAll();
     }

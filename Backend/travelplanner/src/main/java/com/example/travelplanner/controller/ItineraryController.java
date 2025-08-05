@@ -2,9 +2,12 @@ package com.example.travelplanner.controller;
 
 import com.example.travelplanner.entity.Itinerary;
 import com.example.travelplanner.entity.Trip;
+import com.example.travelplanner.entity.User;
 import com.example.travelplanner.service.ItineraryService;
 import jakarta.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +22,14 @@ public class ItineraryController {
 
     public ItineraryController(ItineraryService service) {
         this.service = service;
+    }
+
+    // Update
+    @PutMapping("/{id}")
+    public ResponseEntity<Itinerary> updateItinerary(@PathVariable Long id, @RequestBody Itinerary itinerary) {
+        // logger.info("🟢 Updating itinerary with particular id");
+        Itinerary updatedItinerary = service.updateItinerary(id, itinerary);
+        return new ResponseEntity<>(updatedItinerary, HttpStatus.OK);
     }
 
     @PostMapping
