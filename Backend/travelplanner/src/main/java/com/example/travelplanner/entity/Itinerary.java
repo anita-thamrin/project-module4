@@ -43,6 +43,9 @@ public class Itinerary {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
+    @OneToMany(mappedBy = "itinerary", cascade = CascadeType.ALL)
+    private List<Trip> trips;
+
     private String notes;
 
     @OneToMany(mappedBy = "itinerary")

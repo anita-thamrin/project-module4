@@ -16,4 +16,6 @@ public interface ItineraryService {
     void deleteItinerary(Long id);
 
     Trip addTripToItinerary(Long id, Trip trip);
+
+    List<Trip> getTrips(Long id);
 }

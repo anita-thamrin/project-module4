@@ -15,7 +15,8 @@ import java.util.List;
 public class ItineraryServiceImpl implements ItineraryService {
 
     private final ItineraryRepository repo;
-    private final TripRepository tripRepository;
+
+    private TripRepository tripRepository;
 
     public ItineraryServiceImpl(ItineraryRepository repo, TripRepository tripRepository) {
         this.repo = repo;
@@ -51,5 +52,20 @@ public class ItineraryServiceImpl implements ItineraryService {
             throw new ItineraryNotFoundException(id);
         }
         repo.deleteById(id);
+    }
+
+    @Override
+    public Trip addTripToItinerary(Long id, Trip trip) {
+        Itinerary selectedItinerary = repo.findById(id).orElseThrow(() -> new ItineraryNotFoundException(id));
+
+        trip.setItinerary(selectedItinerary);
+        return tripRepository.save(trip);
+    }
+
+    @Override
+    public List<Trip> getTrips(Long id) {
+        Itinerary selectedItinerary = repo.findById(id).orElseThrow(() -> new ItineraryNotFoundException(id));
+        List<Trip> trips = selectedItinerary.getTrips();
+        return trips;
     }
 }
