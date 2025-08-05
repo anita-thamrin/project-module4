@@ -48,9 +48,6 @@ public class Itinerary {
 
     private String notes;
 
-    @OneToMany(mappedBy = "itinerary")
-    private List<Trip> trips;
-
     // Getters and Setters
     public Long getId() {
         return id;

@@ -34,14 +34,6 @@ public class ItineraryServiceImpl implements ItineraryService {
     }
 
     @Override
-    public Trip addTripToItinerary(Long id, Trip trip) {
-        Itinerary selectedItinerary = repo.findById(id).orElseThrow(() -> new ItineraryNotFoundException(id));
-
-        trip.setItinerary(selectedItinerary);
-        return tripRepository.save(trip);
-    }
-
-    @Override
     public List<Itinerary> getAllItineraries() {
         return repo.findAll();
     }
