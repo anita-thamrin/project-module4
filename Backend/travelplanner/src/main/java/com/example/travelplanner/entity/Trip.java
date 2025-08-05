@@ -8,12 +8,14 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "trip")
-@Data // Provides getters, setters, toString, equals, and hashCode
+@Getter
+@Setter
 @NoArgsConstructor // Creates a no-argument constructor
 @AllArgsConstructor // Creates a constructor with all arguments
 public class Trip {

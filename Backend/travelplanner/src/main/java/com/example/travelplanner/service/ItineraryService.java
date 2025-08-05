@@ -18,4 +18,6 @@ public interface ItineraryService {
     Trip addTripToItinerary(Long id, Trip trip);
 
     List<Trip> getTrips(Long id);
+
+    Itinerary updateItinerary(Long id, Itinerary itinerary);
 }
