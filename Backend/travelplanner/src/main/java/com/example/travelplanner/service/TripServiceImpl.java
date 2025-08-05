@@ -40,7 +40,6 @@ public class TripServiceImpl implements TripService {
     public Trip updateTrip(Long id, Trip tripDetails) {
         return tripRepository.findById(id)
                 .map(trip -> {
-                    trip.setId(tripDetails.getId());
                     trip.setActivityType(tripDetails.getActivityType());
                     trip.setActivityDesc(tripDetails.getActivityDesc());
                     trip.setPrice(tripDetails.getPrice());
