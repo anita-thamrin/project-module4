@@ -1,6 +1,7 @@
 
 package com.example.travelplanner.service;
 
+import com.example.travelplanner.dto.ItineraryWithTotalDTO;
 import com.example.travelplanner.entity.Itinerary;
 import com.example.travelplanner.entity.Trip;
 
@@ -9,7 +10,7 @@ import java.util.List;
 public interface ItineraryService {
     Itinerary createItinerary(Itinerary itinerary);
 
-    Itinerary getItinerary(Long id);
+    ItineraryWithTotalDTO getItinerary(Long id);
 
     List<Itinerary> getAllItineraries();
 

@@ -1,6 +1,7 @@
 
 package com.example.travelplanner.service;
 
+import com.example.travelplanner.dto.ItineraryWithTotalDTO;
 import com.example.travelplanner.entity.Itinerary;
 import com.example.travelplanner.entity.Trip;
 import com.example.travelplanner.exception.ItineraryNotFoundException;
@@ -29,8 +30,14 @@ public class ItineraryServiceImpl implements ItineraryService {
     }
 
     @Override
-    public Itinerary getItinerary(Long id) {
-        return repo.findById(id).orElseThrow(() -> new ItineraryNotFoundException(id));
+    public ItineraryWithTotalDTO getItinerary(Long id) {
+        Itinerary itinerary = repo.findById(id).orElseThrow(() -> new ItineraryNotFoundException(id));
+        double totalPrice = itinerary.getTrips()
+            .stream()
+            .mapToDouble(Trip::getPrice)
+            .sum();
+        
+        return new ItineraryWithTotalDTO(itinerary, totalPrice);
     }
 
     @Override
