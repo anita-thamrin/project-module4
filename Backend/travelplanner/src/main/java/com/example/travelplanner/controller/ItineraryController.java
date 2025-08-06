@@ -1,8 +1,8 @@
 package com.example.travelplanner.controller;
 
+import com.example.travelplanner.dto.ItineraryWithTotalDTO;
 import com.example.travelplanner.entity.Itinerary;
 import com.example.travelplanner.entity.Trip;
-import com.example.travelplanner.entity.User;
 import com.example.travelplanner.service.ItineraryService;
 import jakarta.validation.Valid;
 
@@ -17,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/itineraries")
 public class ItineraryController {
+    private static final Logger logger = LoggerFactory.getLogger(ItineraryController.class);
 
     private final ItineraryService service;
 
@@ -27,7 +28,7 @@ public class ItineraryController {
     // Update
     @PutMapping("/{id}")
     public ResponseEntity<Itinerary> updateItinerary(@PathVariable Long id, @RequestBody Itinerary itinerary) {
-        // logger.info("🟢 Updating itinerary with particular id");
+        logger.info("🟢 Updating itinerary with particular id");
         Itinerary updatedItinerary = service.updateItinerary(id, itinerary);
         return new ResponseEntity<>(updatedItinerary, HttpStatus.OK);
     }
@@ -38,8 +39,9 @@ public class ItineraryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Itinerary> get(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getItinerary(id));
+    public ResponseEntity<ItineraryWithTotalDTO> get(@PathVariable Long id) {
+        ItineraryWithTotalDTO dto = service.getItinerary(id);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     // NESTED ROUTE - add trip to itinerary
