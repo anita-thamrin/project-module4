@@ -26,7 +26,8 @@ public class TripServiceImpl implements TripService {
 
     @Override
     public Optional<Trip> getTripById(Long id) {
-        return tripRepository.findById(id);
+
+        return Optional.ofNullable(tripRepository.findById(id).orElseThrow(() -> new TripNotFoundException(id)));
     }
 
     @Override

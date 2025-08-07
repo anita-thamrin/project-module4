@@ -40,7 +40,7 @@ public class Trip {
     private Double price;
 
     @JsonBackReference
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "itinerary_id", referencedColumnName = "id")
     private Itinerary itinerary;
 }

@@ -31,8 +31,10 @@ public class TripServiceImplTest {
 
     @Test
     public void testGetAllTrips() {
-        Trip trip1 = new Trip(); trip1.setId(1L);
-        Trip trip2 = new Trip(); trip2.setId(2L);
+        Trip trip1 = new Trip();
+        trip1.setId(1L);
+        Trip trip2 = new Trip();
+        trip2.setId(2L);
 
         when(tripRepository.findAll()).thenReturn(Arrays.asList(trip1, trip2));
 
@@ -43,7 +45,8 @@ public class TripServiceImplTest {
 
     @Test
     public void testGetTripById_Success() {
-        Trip trip = new Trip(); trip.setId(1L);
+        Trip trip = new Trip();
+        trip.setId(1L);
         when(tripRepository.findById(1L)).thenReturn(Optional.of(trip));
 
         Optional<Trip> foundTrip = tripService.getTripById(1L);
@@ -56,14 +59,15 @@ public class TripServiceImplTest {
     public void testGetTripById_NotFound() {
         when(tripRepository.findById(99L)).thenReturn(Optional.empty());
 
-        Optional<Trip> foundTrip = tripService.getTripById(99L);
-
-        assertThat(foundTrip).isNotPresent();
+        assertThatThrownBy(() -> tripService.getTripById(99L))
+                .isInstanceOf(TripNotFoundException.class)
+                .hasMessageContaining("Could not find Trip with id:99");
     }
 
     @Test
     public void testCreateTrip() {
-        Trip trip = new Trip(); trip.setActivityType("Hiking");
+        Trip trip = new Trip();
+        trip.setActivityType("Hiking");
         when(tripRepository.save(trip)).thenReturn(trip);
 
         Trip createdTrip = tripService.createTrip(trip);
@@ -73,8 +77,11 @@ public class TripServiceImplTest {
 
     @Test
     public void testUpdateTrip_Success() {
-        Trip existingTrip = new Trip(); existingTrip.setId(1L); existingTrip.setActivityType("Old Activity");
-        Trip newDetails = new Trip(); newDetails.setActivityType("New Activity");
+        Trip existingTrip = new Trip();
+        existingTrip.setId(1L);
+        existingTrip.setActivityType("Old Activity");
+        Trip newDetails = new Trip();
+        newDetails.setActivityType("New Activity");
 
         when(tripRepository.findById(1L)).thenReturn(Optional.of(existingTrip));
         when(tripRepository.save(any(Trip.class))).thenReturn(existingTrip);
@@ -92,7 +99,7 @@ public class TripServiceImplTest {
 
         assertThatThrownBy(() -> tripService.updateTrip(100L, tripDetails))
                 .isInstanceOf(TripNotFoundException.class)
-                .hasMessageContaining("Could not find product with id:");
+                .hasMessageContaining("Could not find Trip with id:100");
     }
 
     @Test
@@ -111,13 +118,15 @@ public class TripServiceImplTest {
 
         assertThatThrownBy(() -> tripService.deleteTrip(999L))
                 .isInstanceOf(TripNotFoundException.class)
-                .hasMessageContaining("Could not find product with id:");
+                .hasMessageContaining("Could not find Trip with id:999");
     }
 
     @Test
     public void testGetTripsByDay() {
-        Trip trip1 = new Trip(); trip1.setTripDay(1);
-        Trip trip2 = new Trip(); trip2.setTripDay(1);
+        Trip trip1 = new Trip();
+        trip1.setTripDay(1);
+        Trip trip2 = new Trip();
+        trip2.setTripDay(1);
 
         when(tripRepository.findByTripDayOrderByTripDayAsc(1)).thenReturn(Arrays.asList(trip1, trip2));
 
