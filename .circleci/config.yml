@@ -17,7 +17,7 @@ jobs:
           key: maven-repo-{{ checksum "Backend/travelplanner/pom.xml" }}
       - run:
           name: Download dependencies
-          command: ./mvnw dependency:go-offline -B -ntp
+          command: Backend/travelplanner/mvnw dependency:go-offline -B -ntp
       # Cache is saved in CircleCI
       - save_cache:
           key: maven-repo-{{ checksum "Backend/travelplanner/pom.xml" }}
@@ -25,7 +25,7 @@ jobs:
             - ~/.m2
       - run:
           name: Run tests
-          command: ./mvnw test -Dspring.profiles.active=test
+          command: Backend/travelplanner/mvnw test -Dspring.profiles.active=test
 
   build:
     executor: docker/docker
