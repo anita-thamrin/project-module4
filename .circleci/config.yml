@@ -46,6 +46,7 @@ jobs:
           root: /tmp/docker-images
           paths:
             - "*.tar"
+            
   # Snyk Software Composition Analysis + container scan
   snyk_sca_container:
     docker:
