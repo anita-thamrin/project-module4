@@ -54,14 +54,14 @@ jobs:
       # but it does not matter since we are using ths snyk orb
       # - image: snyk/snyk-cli:docker
       - image: cimg/openjdk:21.0
-    environment:
-      IMAGE_NAME: $DOCKER_REPO
+    # environment:
+    #   IMAGE_NAME: $DOCKER_REPO
     steps:
       - checkout
       - setup_remote_docker
-      - run: docker build -t $IMAGE_NAME .
+      - run: docker build -t $DOCKER_REPO .
       - snyk/scan:
-          docker-image-name: $IMAGE_NAME
+          docker-image-name: $DOCKER_REPO
           # additional-arguments: --severity-threshold=critical
 
   # Snyk Static Application Security Testing (code scan)
