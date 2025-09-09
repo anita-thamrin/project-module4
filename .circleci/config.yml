@@ -53,9 +53,9 @@ jobs:
       # snyk image provides snyk CLI pre-installed
       # but it does not matter since we are using ths snyk orb
       # - image: snyk/snyk-cli:docker
-      - image: cimg/node:16.10
+      - image: cimg/openjdk:21.0
     environment:
-      IMAGE_NAME: thinkdaniel/test-repository
+      IMAGE_NAME: $DOCKER_REPO
     steps:
       - checkout
       - setup_remote_docker
@@ -67,7 +67,7 @@ jobs:
   # Snyk Static Application Security Testing (code scan)
   snyk_sast:
     docker:
-      - image: cimg/node:16.10
+      - image: cimg/openjdk:21.0
     steps:
       - checkout
       - snyk/scan:
