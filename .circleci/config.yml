@@ -142,9 +142,15 @@ workflows:
   ci_develop:
     jobs:
       - test
+          filters:
+            branches:
+              only: develop
       - build:
           requires:
             - test
+          filters:
+            branches:
+              only: develop
       - snyk_sca_container:
           requires:
             - build
@@ -167,9 +173,15 @@ workflows:
   ci_cd_release:
     jobs:
       - test
+          filters:
+            branches:
+              only: release
       - build:
           requires:
             - test
+          filters:
+            branches:
+              only: release
       - snyk_sca_container:
           requires:
             - build
