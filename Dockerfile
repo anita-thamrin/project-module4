@@ -22,7 +22,7 @@ RUN ./mvnw dependency:go-offline -B
 COPY . .
 
 # Build the app
-RUN ./mvnw clean package -DskipTests
+RUN ./mvnw clean package spring-boot:repackage -DskipTests
 
 # RUN STAGE
 # Use the smaller JRE image for the final runtime
