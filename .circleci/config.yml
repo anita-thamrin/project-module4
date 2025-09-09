@@ -95,15 +95,15 @@ jobs:
     steps:
       - setup_remote_docker
       - heroku/install
-      # - run:
-      #     name: Set Heroku stack to container
-      #     command: heroku stack:set container -a travelplanner
+      - run:
+          name: Set Heroku stack to container
+          command: heroku stack:set container -a travelplanner
       - run:
           name: Login to Heroku 
           command: heroku container:login
-      - run:
-          name: Heroku Push 
-          command: heroku container:push web -a travelplanner
+      # - run:
+      #     name: Heroku Push 
+      #     command: heroku container:push web -a travelplanner
       - run:
           # Heroku's DATABASE_URL does not work directly with Spring Boot
           name: Transform DATABASE_URL for Spring Boot
