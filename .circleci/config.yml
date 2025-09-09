@@ -99,7 +99,7 @@ jobs:
       #     name: Set Heroku stack to container
       #     command: heroku stack:set container -a travelplanner
       - run:
-          name: Login to Heroku
+          name: Login to Heroku # Heroku login token refreshed
           command: heroku container:login
       - run:
           name: Heroku Push 
